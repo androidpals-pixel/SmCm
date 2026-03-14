@@ -1,0 +1,791 @@
+{\rtf1\ansi\ansicpg1252\cocoartf2761
+\cocoatextscaling0\cocoaplatform0{\fonttbl\f0\fswiss\fcharset0 Helvetica;\f1\fnil\fcharset0 Menlo-Regular;\f2\fnil\fcharset77 ZapfDingbatsITC;
+\f3\fnil\fcharset0 LucidaGrande;\f4\fnil\fcharset0 AppleColorEmoji;}
+{\colortbl;\red255\green255\blue255;}
+{\*\expandedcolortbl;;}
+\margl1440\margr1440\vieww11520\viewh8400\viewkind0
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+
+\f0\fs24 \cf0 <!doctype html>\
+<html lang="en">\
+<head>\
+  <meta charset="UTF-8" />\
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />\
+  <title>SoundMorph Content Manager Prototype</title>\
+  <link rel="preconnect" href="https://fonts.googleapis.com">\
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>\
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Outfit:wght@600;700;800&family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">\
+  <style>\
+    :root \{\
+      --void: #050508;\
+      --deep: #0a0a10;\
+      --panel: #0e0e16;\
+      --card: #121219;\
+      --cardHi: #171722;\
+      --border: rgba(255,255,255,0.07);\
+      --borderHi: rgba(255,255,255,0.14);\
+      --text: #ece7df;\
+      --sub: #9e988f;\
+      --dim: #615b54;\
+      --ghost: #2a2824;\
+      --orange: #d4622b;\
+      --orangeHi: #e87a3f;\
+      --orangeSoft: rgba(212,98,43,0.10);\
+      --cyan: #4db8a4;\
+      --green: #59c173;\
+      --greenSoft: rgba(89,193,115,0.12);\
+      --yellow: #d7ad44;\
+      --yellowSoft: rgba(215,173,68,0.12);\
+      --purple: #b582ff;\
+      --purpleSoft: rgba(181,130,255,0.12);\
+      --display: 'Outfit', 'Helvetica Neue', sans-serif;\
+      --body: 'Plus Jakarta Sans', 'Helvetica Neue', sans-serif;\
+      --mono: 'JetBrains Mono', 'SF Mono', monospace;\
+    \}\
+\
+    * \{ box-sizing: border-box; \}\
+    html, body \{ margin: 0; padding: 0; min-height: 100%; \}\
+    body \{\
+      font-family: var(--body);\
+      color: var(--text);\
+      background:\
+        radial-gradient(1200px 900px at 18% 8%, rgba(212,98,43,0.06), transparent 45%),\
+        radial-gradient(900px 700px at 82% 18%, rgba(77,184,164,0.05), transparent 42%),\
+        linear-gradient(180deg, #08080d 0%, #06060a 45%, #040406 100%);\
+      overflow-x: hidden;\
+    \}\
+\
+    body::before \{\
+      content: "";\
+      position: fixed;\
+      inset: 0;\
+      pointer-events: none;\
+      background: radial-gradient(circle at center, rgba(255,255,255,0.018), transparent 58%);\
+      z-index: 0;\
+    \}\
+\
+    .watermark \{\
+      position: fixed;\
+      left: 50%;\
+      top: 46%;\
+      transform: translate(-50%, -50%);\
+      width: 560px;\
+      max-width: 72vw;\
+      opacity: 0.045;\
+      filter: grayscale(1) brightness(1.15) blur(1.2px);\
+      mix-blend-mode: screen;\
+      pointer-events: none;\
+      z-index: 0;\
+    \}\
+\
+    .app \{\
+      position: relative;\
+      z-index: 1;\
+      min-height: 100vh;\
+      display: flex;\
+      flex-direction: column;\
+    \}\
+\
+    header \{\
+      position: sticky;\
+      top: 0;\
+      z-index: 10;\
+      display: flex;\
+      align-items: center;\
+      justify-content: space-between;\
+      gap: 18px;\
+      padding: 0 24px;\
+      height: 74px;\
+      border-bottom: 1px solid var(--border);\
+      background: linear-gradient(180deg, rgba(14,14,22,0.92), rgba(10,10,16,0.82));\
+      backdrop-filter: blur(20px);\
+    \}\
+\
+    .header-art \{\
+      width: 300px;\
+      height: 44px;\
+      border-radius: 10px;\
+      overflow: hidden;\
+      border: 1px solid rgba(255,255,255,0.06);\
+      background: rgba(255,255,255,0.02);\
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.04);\
+      flex-shrink: 0;\
+    \}\
+\
+    .header-art img \{\
+      width: 100%;\
+      height: 100%;\
+      object-fit: cover;\
+      object-position: center center;\
+      display: block;\
+    \}\
+\
+    .search-wrap \{\
+      position: relative;\
+      width: min(360px, 34%);\
+      min-width: 240px;\
+    \}\
+\
+    .search-wrap input \{\
+      width: 100%;\
+      padding: 11px 14px 11px 36px;\
+      background: var(--deep);\
+      border: 1px solid var(--border);\
+      border-radius: 12px;\
+      color: var(--text);\
+      font-size: 15px;\
+      outline: none;\
+      font-family: var(--body);\
+    \}\
+\
+    .search-wrap svg \{\
+      position: absolute;\
+      left: 12px;\
+      top: 50%;\
+      transform: translateY(-50%);\
+      stroke: var(--dim);\
+    \}\
+\
+    .top-actions \{ display: flex; align-items: center; gap: 10px; \}\
+    .icon-btn, .avatar \{\
+      width: 38px; height: 38px; border-radius: 10px; border: 1px solid var(--border);\
+      display: flex; align-items: center; justify-content: center;\
+      background: transparent; color: var(--sub); cursor: pointer; font-size: 15px;\
+    \}\
+    .avatar \{ border-radius: 999px; background: var(--panel); font: 700 13px var(--mono); \}\
+    .icon-btn.active \{ background: var(--orangeSoft); color: var(--orange); border-color: rgba(212,98,43,0.22); \}\
+\
+    .settings \{\
+      display: none;\
+      padding: 14px 24px;\
+      border-bottom: 1px solid var(--border);\
+      background: var(--panel);\
+      gap: 28px;\
+      align-items: flex-start;\
+      flex-wrap: wrap;\
+    \}\
+    .settings.open \{ display: flex; \}\
+    .settings .label \{\
+      font: 11px var(--mono);\
+      letter-spacing: .14em;\
+      margin-bottom: 6px;\
+      text-transform: uppercase;\
+    \}\
+    .settings .path \{\
+      display: flex; align-items: center; gap: 8px;\
+      color: var(--sub); font: 13px var(--mono);\
+    \}\
+    .chip-btn \{\
+      font: 11px var(--mono);\
+      padding: 4px 10px;\
+      border-radius: 999px;\
+      border: 1px solid var(--border);\
+      background: transparent;\
+      color: var(--dim);\
+      cursor: pointer;\
+    \}\
+\
+    .tabs-shell \{\
+      border-bottom: 1px solid var(--border);\
+      background: linear-gradient(180deg, rgba(12,12,18,0.94), rgba(8,8,12,0.92));\
+    \}\
+    .top-tabs, .status-tabs \{\
+      display: flex; align-items: center; justify-content: space-between;\
+      padding: 0 24px; gap: 16px; flex-wrap: wrap;\
+    \}\
+    .top-tabs \{ height: 62px; \}\
+    .status-tabs \{ padding-bottom: 16px; \}\
+\
+    .type-tabs, .filter-tabs \{ display: flex; align-items: center; gap: 10px; flex-wrap: wrap; \}\
+    .type-tab \{\
+      padding: 0 2px; height: 100%; border: none; background: transparent; cursor: pointer;\
+      color: var(--sub); font: 600 18px var(--display); border-bottom: 2px solid transparent;\
+    \}\
+    .type-tab.active \{ color: var(--text); font-weight: 800; border-bottom-color: var(--purple); \}\
+\
+    .filter-tab \{\
+      padding: 10px 16px; border-radius: 999px; border: 1px solid var(--border);\
+      background: rgba(255,255,255,0.02); color: var(--sub); font: 700 14px var(--body);\
+      cursor: pointer;\
+    \}\
+    .filter-tab.active \{\
+      border-color: rgba(181,130,255,0.32);\
+      background: rgba(181,130,255,0.14);\
+      color: #f1eaff;\
+      box-shadow: 0 0 0 1px rgba(181,130,255,0.08), 0 0 24px rgba(181,130,255,0.12);\
+    \}\
+    .filter-count \{ margin-left: 8px; font: 12px var(--mono); color: var(--dim); \}\
+    .filter-tab.active .filter-count \{ color: #dfcfff; \}\
+\
+    .header-meta \{\
+      font: 13px var(--mono);\
+      letter-spacing: .08em;\
+      text-transform: uppercase;\
+      color: var(--sub);\
+    \}\
+    .header-submeta \{ font-size: 14px; color: var(--dim); \}\
+\
+    .batch-bar \{\
+      display: none;\
+      align-items: center;\
+      justify-content: space-between;\
+      padding: 10px 24px;\
+      border-bottom: 1px solid rgba(212,98,43,0.12);\
+      background: var(--orangeSoft);\
+      gap: 16px;\
+    \}\
+    .batch-bar.update \{\
+      background: var(--yellowSoft);\
+      border-bottom-color: rgba(215,173,68,0.14);\
+    \}\
+\
+    main \{ flex: 1; padding: 24px; \}\
+    .empty \{\
+      text-align: center; padding: 100px; color: var(--dim);\
+    \}\
+    .empty .icon \{ font-size: 40px; margin-bottom: 12px; opacity: .22; \}\
+\
+    .library-grid \{\
+      max-width: 1500px; margin: 0 auto;\
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 24px;\
+    \}\
+\
+    .library-card \{\
+      position: relative;\
+      border-radius: 24px;\
+      overflow: hidden;\
+      border: 1px solid var(--border);\
+      background: linear-gradient(180deg, rgba(14,14,20,0.96), rgba(9,9,14,0.96));\
+      box-shadow: 0 10px 24px rgba(0,0,0,0.22);\
+    \}\
+    .library-inner \{ padding: 18px; \}\
+    .cover-wrap \{ position: relative; margin-bottom: 18px; display: flex; justify-content: center; \}\
+    .cover \{\
+      width: 244px; height: 270px; border-radius: 18px; overflow: hidden; position: relative;\
+      background: linear-gradient(135deg, #151522, #090910 70%);\
+      border: 1px solid rgba(255,255,255,0.06);\
+      flex-shrink: 0;\
+    \}\
+    .cover img \{ width: 100%; height: 100%; object-fit: cover; display: block; \}\
+    .cover-fallback \{\
+      width: 100%; height: 100%; display: flex; align-items: center; justify-content: center;\
+      background: radial-gradient(circle at 50% 25%, rgba(255,255,255,0.14), transparent 42%), linear-gradient(135deg, rgba(255,255,255,0.08), rgba(9,9,16,1) 70%);\
+      color: white; font-family: var(--display); font-size: 22px; font-weight: 800; text-transform: uppercase;\
+      letter-spacing: .08em; padding: 16px; text-align: center;\
+    \}\
+    .cover-overlay \{\
+      position: absolute; inset: 0; box-shadow: inset 0 1px 0 rgba(255,255,255,0.04), inset 0 -80px 120px rgba(0,0,0,0.16);\
+    \}\
+    .cover-cat \{\
+      position: absolute; left: 18px; bottom: 16px; font: 800 14px var(--display); letter-spacing: .12em; text-transform: uppercase; color: rgba(255,255,255,0.86);\
+    \}\
+\
+    .card-row \{ display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; \}\
+    .card-title \{ font: 800 22px var(--display); line-height: 1.08; \}\
+    .card-desc \{ margin: 10px 0 0; font-size: 15px; color: var(--sub); line-height: 1.55; min-height: 72px; \}\
+    .meta-row \{ display: flex; gap: 14px; flex-wrap: wrap; font: 12px var(--mono); color: var(--dim); margin-top: 12px; \}\
+    .bottom-row \{ display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: 18px; \}\
+\
+    .software-list \{ max-width: 1200px; margin: 0 auto; display: grid; gap: 12px; \}\
+    .software-card \{\
+      display: flex; gap: 18px; padding: 20px 22px; border-radius: 18px; border: 1px solid var(--border);\
+      background: linear-gradient(135deg, rgba(18,18,25,0.96), rgba(10,10,16,0.94));\
+      box-shadow: 0 2px 12px rgba(0,0,0,0.22); overflow: hidden;\
+    \}\
+    .software-art \{\
+      width: 84px; height: 84px; border-radius: 18px; flex-shrink: 0;\
+      border: 1px solid rgba(255,255,255,0.06);\
+      background: linear-gradient(135deg, rgba(255,255,255,0.1), rgba(9,9,16,1) 70%);\
+      display: flex; align-items: center; justify-content: center;\
+      color: white; font: 800 11px var(--display); text-transform: uppercase; letter-spacing: .08em; text-align: center; padding: 8px;\
+    \}\
+    .software-content \{ flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 8px; \}\
+    .software-head \{ display: flex; align-items: center; gap: 10px; flex-wrap: wrap; \}\
+    .software-name \{ font: 800 22px var(--display); line-height: 1.05; \}\
+    .software-desc \{ font-size: 16px; color: var(--sub); line-height: 1.55; margin: 0; max-width: 740px; \}\
+    .software-meta \{ display: flex; gap: 16px; flex-wrap: wrap; font: 13px var(--mono); color: var(--dim); \}\
+\
+    .pill \{\
+      font: 700 11px var(--mono);\
+      padding: 4px 10px;\
+      border-radius: 999px;\
+      letter-spacing: .06em;\
+      text-transform: uppercase;\
+      border: 1px solid transparent;\
+      white-space: nowrap;\
+    \}\
+    .pill.software-tag \{\
+      background: var(--purpleSoft);\
+      color: var(--purple);\
+      border-color: rgba(181,130,255,0.14);\
+    \}\
+\
+    .play-btn, .action-btn \{\
+      border: none; cursor: pointer; font-family: var(--body);\
+    \}\
+    .play-btn \{\
+      width: 38px; height: 38px; border-radius: 999px;\
+      border: 1px solid var(--border);\
+      background: rgba(255,255,255,0.02); color: var(--sub);\
+    \}\
+    .play-btn.active \{ background: var(--orangeSoft); color: var(--orange); border-color: rgba(212,98,43,0.3); \}\
+\
+    .action-btn \{\
+      padding: 10px 18px; border-radius: 999px; font-size: 14px; font-weight: 800;\
+      color: #fff; background: linear-gradient(135deg, rgba(171,116,255,0.95), rgba(221,129,255,0.92));\
+      border: 1px solid rgba(181,130,255,0.24);\
+    \}\
+    .action-btn.downloaded, .action-btn.installed \{\
+      background: rgba(255,255,255,0.03); color: var(--dim); border-color: var(--border);\
+    \}\
+    .action-btn.update \{ background: var(--yellow); color: #0a0a0a; border-color: transparent; \}\
+    .action-btn.install \{ background: linear-gradient(135deg, var(--orange), var(--orangeHi)); color: #fff; border-color: transparent; \}\
+    .action-btn.trial \{ background: var(--purple); color: #fff; border-color: transparent; \}\
+\
+    .progress-wrap \{ display: flex; align-items: center; gap: 8px; min-width: 150px; \}\
+    .progress \{ flex: 1; height: 5px; background: rgba(255,255,255,0.06); border-radius: 999px; overflow: hidden; \}\
+    .progress-bar \{ height: 100%; background: linear-gradient(90deg, var(--purple), #da8cff); border-radius: 999px; \}\
+    .progress-bar.software \{ background: linear-gradient(90deg, var(--orange), var(--orangeHi)); \}\
+    .progress-text \{ font: 12px var(--mono); color: var(--sub); \}\
+\
+    footer \{\
+      display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap;\
+      padding: 10px 24px; border-top: 1px solid var(--border); background: var(--deep);\
+      font: 13px var(--mono); color: var(--dim); min-height: 42px;\
+    \}\
+    .footer-left \{ display: flex; gap: 10px; align-items: center; \}\
+    .footer-active \{ display: flex; align-items: center; gap: 12px; flex-wrap: wrap; \}\
+    .spinner \{\
+      width: 12px; height: 12px; border: 2px solid rgba(212,98,43,0.15); border-top-color: var(--orange);\
+      border-radius: 50%; animation: sm-spin .8s linear infinite;\
+    \}\
+\
+    @media (max-width: 900px) \{\
+      header \{ height: auto; padding: 16px; flex-wrap: wrap; \}\
+      .search-wrap \{ width: 100%; order: 3; \}\
+      .header-art \{ width: 240px; \}\
+      .software-card \{ flex-direction: column; \}\
+    \}\
+  </style>\
+</head>\
+<body>\
+  <img class="watermark" src="https://soundmorph.com/cdn/shop/files/Intervention.jpg?v=1722452850&width=1200" alt="" />\
+  <div class="app">\
+    <header>\
+      <div class="header-art">\
+        <img src="https://soundmorph.com/cdn/shop/files/Intervention.jpg?v=1722452850&width=1200" alt="SoundMorph header artwork" />\
+      </div>\
+\
+      <div class="search-wrap">\
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round">\
+          <circle cx="11" cy="11" r="7"></circle>\
+          <path d="M21 21l-4.35-4.35"></path>\
+        </svg>\
+        <input id="searchInput" placeholder="Search the SoundVerse..." />\
+      </div>\
+\
+      <div class="top-actions">\
+        <button id="settingsBtn" class="icon-btn">
+\f1 \uc0\u9881 
+\f0 </button>\
+        <div class="avatar">AP</div>\
+      </div>\
+    </header>\
+\
+    <div id="settingsPanel" class="settings">\
+      <div>\
+        <div class="label" style="color: var(--cyan)">Software Install Path</div>\
+        <div class="path">/Library/Audio/Plug-Ins/ <button class="chip-btn">Change</button></div>\
+      </div>\
+      <div>\
+        <div class="label" style="color: var(--orange)">Sound Library Folder</div>\
+        <div class="path">/Users/Shared/SoundMorph/Libraries/ <button class="chip-btn">Change</button></div>\
+      </div>\
+      <div style="margin-left:auto; display:flex; gap:14px; align-items:center; flex-wrap:wrap;">\
+        <span style="font-size:13px; color: var(--sub)">Auto-update</span>\
+        <div style="width:36px;height:20px;border-radius:999px;background:var(--orange);padding:2px;"><div style="width:16px;height:16px;border-radius:50%;background:#fff;margin-left:16px;"></div></div>\
+        <button class="chip-btn">Export Offline</button>\
+      </div>\
+    </div>\
+\
+    <div class="tabs-shell">\
+      <div class="top-tabs">\
+        <div id="typeTabs" class="type-tabs"></div>\
+        <div id="headerMeta" class="header-meta"></div>\
+      </div>\
+      <div class="status-tabs">\
+        <div id="statusTabs" class="filter-tabs"></div>\
+        <div id="headerSubmeta" class="header-submeta"></div>\
+      </div>\
+    </div>\
+\
+    <div id="batchBar" class="batch-bar">\
+      <span id="batchText" style="font-size:13px;color:var(--sub)"></span>\
+      <button id="batchBtn" class="action-btn install">Download All</button>\
+    </div>\
+\
+    <main id="mainContent"></main>\
+\
+    <footer>\
+      <div class="footer-left">\
+        <span id="footerCount"></span>\
+        <span id="footerMeta" style="color: var(--ghost)"></span>\
+      </div>\
+      <div id="footerRight"></div>\
+    </footer>\
+  </div>\
+\
+  <script>\
+    const SW = [\
+      \{ id: 1, name: "Dust", ver: "2.5.0", size: "1.1 GB", status: "installed", desc: "Organic textures & micro-sound instrument", formats: ["VST3", "AU"], hue: 30 \},\
+      \{ id: 2, name: "TimeFlux", ver: "1.4.0", size: "890 MB", status: "installed", desc: "Spectral time-stretch & morph engine", formats: ["VST3", "AU", "AAX"], hue: 200 \},\
+      \{ id: 3, name: "Wave Warper 2", ver: "2.1.0", size: "1.2 GB", status: "update", desc: "Granular wave manipulation & resynthesis", formats: ["VST3", "AU", "AAX"], newVer: "2.2.0", hue: 280 \},\
+      \{ id: 4, name: "Evil Twin", ver: "1.0.0", size: "780 MB", status: "available", desc: "Dark harmonic distortion & spectral mangling", formats: ["VST3", "AU"], hue: 0 \},\
+      \{ id: 5, name: "Galactic Assistant", ver: "1.1.0", size: "950 MB", status: "installed", desc: "AI-assisted sound design companion", formats: ["VST3", "AU", "AAX"], hue: 240 \},\
+      \{ id: 6, name: "Droid", ver: "1.0.0", size: "720 MB", status: "trial", desc: "Robotic voice processor & vocoder", formats: ["VST3", "AU"], trialDays: 9, hue: 160 \},\
+    ];\
+\
+    const LIB = [\
+      \{ id: 10, name: "Robotic Lifeforms 2", size: "8.4 GB", files: 2480, status: "downloaded", desc: "Cutting-edge robot sounds for futuristic worlds", cat: "Soundpacks", imageUrl: "https://soundmorph.com/cdn/shop/files/RL2_F.jpg?v=1755890535&width=1200" \},\
+      \{ id: 11, name: "Future Weapons 3", size: "5.2 GB", files: 1850, status: "downloaded", desc: "Sci-fi weapon effects for film and games", cat: "Soundpacks", imageUrl: "https://soundmorph.com/cdn/shop/files/FW3_F.jpg?v=1755889751&width=1200" \},\
+      \{ id: 12, name: "Sinematic", size: "4.3 GB", files: 1600, status: "downloaded", desc: "Cinematic transitions, risers & impacts", cat: "Soundpacks", imageUrl: "https://soundmorph.com/cdn/shop/files/SNC-F.jpg?v=1755890621&width=1200" \},\
+      \{ id: 13, name: "Hyper Thunder", size: "3.8 GB", files: 920, status: "available", desc: "Massive thunder, lightning & storm SFX", cat: "Soundpacks", imageUrl: "https://soundmorph.com/cdn/shop/files/HYP_F.jpg?v=1755981165&width=1200" \},\
+      \{ id: 14, name: "FIRE", size: "6.7 GB", files: 3100, status: "available", desc: "Comprehensive fire & combustion library", cat: "Soundpacks", imageUrl: "https://soundmorph.com/cdn/shop/files/FIR_F.jpg?v=1755889664&width=1200" \},\
+      \{ id: 15, name: "WATER", size: "7.1 GB", files: 2900, status: "available", desc: "Deep ocean, rivers, rain & liquid sounds", cat: "Soundpacks", imageUrl: "https://soundmorph.com/cdn/shop/files/WTR_F.jpg?v=1755891027&width=1200" \},\
+      \{ id: 16, name: "Gore 2", size: "9.2 GB", files: 4100, status: "available", desc: "Horror & creature sound design toolkit", cat: "Soundpacks", imageUrl: "https://soundmorph.com/cdn/shop/files/GR2_F_500.png?v=1755889832&width=900" \},\
+      \{ id: 17, name: "Elemental", size: "5.9 GB", files: 2700, status: "downloaded", desc: "Earth, wind, fire & water raw elements", cat: "Soundpacks", imageUrl: "https://soundmorph.com/cdn/shop/files/ELM_F.jpg?v=1755889492&width=1200" \},\
+      \{ id: 18, name: "Doom Drones", size: "2.2 GB", files: 520, status: "downloaded", desc: "Dark atmospheric drones & textures", cat: "Soundpacks", imageUrl: "https://soundmorph.com/cdn/shop/files/DD1_F.jpg?v=1755889350&width=1200" \},\
+      \{ id: 19, name: "Evolved Whooshes", size: "5.5 GB", files: 2200, status: "available", desc: "Next-gen whoosh & passby effects", cat: "Soundpacks", imageUrl: "https://soundmorph.com/cdn/shop/files/EVO_F.jpg?v=1755889599&width=1200" \},\
+      \{ id: 20, name: "GrapheneLab", size: "2.8 GB", files: 860, status: "downloaded", desc: "Futuristic electronic drum toolkit", cat: "Drums", imageUrl: "https://soundmorph.com/cdn/shop/files/GrapheneLab_Poster_20220428cropped.png?v=1722447323&width=1200" \},\
+      \{ id: 21, name: "Spellbound", size: "5.0 GB", files: 1900, status: "available", desc: "Magic, fantasy & supernatural sound design", cat: "Soundpacks", imageUrl: "https://soundmorph.com/cdn/shop/files/SPB_F.jpg?v=1764018822&width=1200" \},\
+      \{ id: 22, name: "Lock/Load", size: "4.8 GB", files: 2050, status: "downloaded", desc: "Realistic weapon mechanics & handling", cat: "Soundpacks", imageUrl: "https://soundmorph.com/cdn/shop/files/LLD_F.jpg?v=1755890006&width=1200" \},\
+      \{ id: 23, name: "Rainscapes", size: "3.4 GB", files: 780, status: "available", desc: "Immersive rain environments & ambiences", cat: "Soundpacks", imageUrl: "https://soundmorph.com/cdn/shop/files/RSC_F.jpg?v=1755981235&width=1200" \},\
+    ];\
+\
+    const ALL = [...SW.map(p => (\{ ...p, type: 'software' \})), ...LIB.map(p => (\{ ...p, type: 'library' \}))];\
+    const TYPE_TABS = [\
+      \{ key: 'software', label: 'Software' \},\
+      \{ key: 'library', label: 'Sound Libraries' \},\
+    ];\
+    const TABS = [\
+      \{ key: 'all', label: 'All' \},\
+      \{ key: 'downloaded', label: 'Downloaded' \},\
+      \{ key: 'update', label: 'Updates' \},\
+      \{ key: 'available', label: 'Available' \},\
+      \{ key: 'trial', label: 'Software Trials' \},\
+      \{ key: 'shop', label: 'Shop' \},\
+    ];\
+\
+    const state = \{\
+      typeTab: 'library',\
+      tab: 'all',\
+      search: '',\
+      downloads: \{\},\
+      playing: null,\
+      settingsOpen: false,\
+    \};\
+\
+    const timers = \{\};\
+\
+    function getVisibleTabs(typeTab) \{\
+      return typeTab === 'library'\
+        ? TABS.filter(t => t.key !== 'update' && t.key !== 'trial')\
+        : TABS;\
+    \}\
+\
+    function getCounts() \{\
+      return \{\
+        all: ALL.length,\
+        downloaded: ALL.filter(p => p.status === 'downloaded' || p.status === 'installed').length,\
+        update: ALL.filter(p => p.status === 'update').length,\
+        available: ALL.filter(p => p.status === 'available').length,\
+        trial: ALL.filter(p => p.status === 'trial' && p.type === 'software').length,\
+        shop: 8,\
+      \};\
+    \}\
+\
+    function getFiltered() \{\
+      return ALL\
+        .filter(p => p.type === state.typeTab)\
+        .filter(p => \{\
+          if (state.tab === 'shop') return false;\
+          if (state.tab === 'downloaded' && !(p.status === 'downloaded' || p.status === 'installed')) return false;\
+          if (state.tab === 'update' && p.status !== 'update') return false;\
+          if (state.tab === 'available' && p.status !== 'available') return false;\
+          if (state.tab === 'trial' && !(p.status === 'trial' && p.type === 'software')) return false;\
+          if (state.search && !p.name.toLowerCase().includes(state.search.toLowerCase())) return false;\
+          return true;\
+        \});\
+    \}\
+\
+    function getHeaderMessage(filtered) \{\
+      if (state.tab === 'available') return `$\{filtered.length\} $\{state.typeTab === 'software' ? 'software products ready to install' : 'sound libraries ready to download'\}`;\
+      if (state.tab === 'downloaded') return `$\{filtered.length\} $\{state.typeTab === 'software' ? 'software products on this machine' : 'libraries in your collection'\}`;\
+      if (state.tab === 'update') return `$\{filtered.length\} pending updates`;\
+      if (state.tab === 'trial') return `$\{filtered.length\} software trials`;\
+      return `$\{filtered.length\} $\{state.typeTab === 'software' ? 'software products' : 'sound libraries'\}`;\
+    \}\
+\
+    function startDl(id) \{\
+      if (state.downloads[id] && state.downloads[id].progress < 100) return;\
+      state.downloads[id] = \{ progress: 0, speed: '0 MB/s' \};\
+      if (timers[id]) clearInterval(timers[id]);\
+      timers[id] = setInterval(() => \{\
+        const current = state.downloads[id];\
+        if (!current) return;\
+        if (current.progress >= 100) \{\
+          clearInterval(timers[id]);\
+          delete timers[id];\
+          return;\
+        \}\
+        current.progress = Math.min(current.progress + Math.random() * 7 + 3, 100);\
+        current.speed = `$\{(Math.random() * 40 + 12).toFixed(1)\} MB/s`;\
+        render();\
+        if (current.progress >= 100) \{\
+          clearInterval(timers[id]);\
+          delete timers[id];\
+        \}\
+      \}, 350);\
+      render();\
+    \}\
+\
+    function statusPill(status, trialDays, isSoftware) \{\
+      const map = isSoftware\
+        ? \{\
+            installed: \{ l: 'Installed', c: 'var(--green)', bg: 'var(--greenSoft)' \},\
+            update: \{ l: 'Update', c: 'var(--yellow)', bg: 'var(--yellowSoft)' \},\
+            available: \{ l: 'Available', c: 'var(--orange)', bg: 'var(--orangeSoft)' \},\
+            trial: \{ l: 'Trial', c: 'var(--purple)', bg: 'var(--purpleSoft)' \},\
+          \}\
+        : \{\
+            downloaded: \{ l: 'Downloaded', c: 'var(--green)', bg: 'var(--greenSoft)' \},\
+            available: \{ l: 'Available', c: 'var(--orange)', bg: 'var(--orangeSoft)' \},\
+          \};\
+      const sc = map[status];\
+      return `<span class="pill" style="background:$\{sc.bg\};color:$\{sc.c\};border-color:$\{sc.c\}22;">$\{sc.l\}$\{trialDays != null ? ` $\{trialDays\}d` : ''\}</span>`;\
+    \}\
+\
+    function renderTypeTabs() \{\
+      document.getElementById('typeTabs').innerHTML = TYPE_TABS.map(type => `\
+        <button class="type-tab $\{state.typeTab === type.key ? 'active' : ''\}" data-type="$\{type.key\}">$\{type.label\}</button>\
+      `).join('');\
+    \}\
+\
+    function renderStatusTabs(counts) \{\
+      document.getElementById('statusTabs').innerHTML = getVisibleTabs(state.typeTab).map(tab => `\
+        <button class="filter-tab $\{state.tab === tab.key ? 'active' : ''\}" data-tab="$\{tab.key\}">\
+          $\{tab.label\}<span class="filter-count">$\{counts[tab.key]\}</span>\
+        </button>\
+      `).join('');\
+    \}\
+\
+    function renderBatchBar(filtered) \{\
+      const batchBar = document.getElementById('batchBar');\
+      const batchText = document.getElementById('batchText');\
+      const batchBtn = document.getElementById('batchBtn');\
+\
+      const show = state.tab !== 'shop' && (state.tab === 'update' || state.tab === 'available');\
+      batchBar.style.display = show ? 'flex' : 'none';\
+      batchBar.classList.toggle('update', state.tab === 'update');\
+      if (!show) return;\
+\
+      batchText.textContent = state.tab === 'update'\
+        ? `$\{filtered.length\} update$\{filtered.length !== 1 ? 's' : ''\} available`\
+        : `$\{filtered.length\} products ready to download`;\
+      batchBtn.textContent = state.tab === 'update' ? 'Update All' : state.typeTab === 'software' ? 'Install All' : 'Download All';\
+      batchBtn.className = `action-btn $\{state.tab === 'update' ? 'update' : 'install'\}`;\
+      batchBtn.onclick = () => filtered.forEach(p => !['installed', 'downloaded'].includes(p.status) && startDl(p.id));\
+    \}\
+\
+    function renderLibraryCard(p) \{\
+      const dl = state.downloads[p.id];\
+      const action = dl && dl.progress < 100\
+        ? `<div class="progress-wrap"><div class="progress"><div class="progress-bar" style="width:$\{dl.progress\}%"></div></div><span class="progress-text">$\{Math.round(dl.progress)\}%</span></div>`\
+        : `<button class="action-btn $\{p.status === 'downloaded' ? 'downloaded' : ''\}" data-download="$\{p.id\}">$\{p.status === 'downloaded' ? 'Downloaded' : 'Download'\}</button>`;\
+\
+      return `\
+        <div class="library-card">\
+          <div class="library-inner">\
+            <div class="cover-wrap">\
+              <div class="cover">\
+                $\{p.imageUrl ? `<img src="$\{p.imageUrl\}" alt="$\{p.name\}">` : `<div class="cover-fallback">$\{p.name\}</div>`\}\
+                <div class="cover-overlay"></div>\
+              </div>\
+              <div class="cover-cat">$\{p.cat\}</div>\
+            </div>\
+            <div class="card-row">\
+              <div class="card-title">$\{p.name\}</div>\
+              $\{statusPill(p.status, null, false)\}\
+            </div>\
+            <p class="card-desc">$\{p.desc\}</p>\
+            <div class="meta-row">\
+              <span>$\{p.size\}</span>\
+              <span>$\{p.files.toLocaleString()\} files</span>\
+              <span>$\{p.cat\}</span>\
+            </div>\
+            <div class="bottom-row">\
+              <button class="play-btn $\{state.playing === p.id ? 'active' : ''\}" data-play="$\{p.id\}">$\{state.playing === p.id ? '
+\f2 \uc0\u10074 \u10074 
+\f0 ' : '
+\f3 \uc0\u9654 
+\f0 '\}</button>\
+              $\{action\}\
+            </div>\
+          </div>\
+        </div>\
+      `;\
+    \}\
+\
+    function renderSoftwareCard(p) \{\
+      const dl = state.downloads[p.id];\
+      let action;\
+      if (dl && dl.progress < 100) \{\
+        action = `<div class="progress-wrap"><div class="progress"><div class="progress-bar software" style="width:$\{dl.progress\}%"></div></div><span class="progress-text">$\{Math.round(dl.progress)\}%</span></div>`;\
+      \} else \{\
+        const cls = p.status === 'installed' ? 'installed' : p.status === 'update' ? 'update' : p.status === 'trial' ? 'trial' : 'install';\
+        const label = p.status === 'installed' ? 'Installed' : p.status === 'update' ? 'Update' : p.status === 'trial' ? 'Try Free' : 'Install';\
+        action = `<button class="action-btn $\{cls\}" data-download="$\{p.id\}">$\{label\}</button>`;\
+      \}\
+\
+      return `\
+        <div class="software-card">\
+          <div class="software-art">$\{p.name\}</div>\
+          <div class="software-content">\
+            <div class="software-head">\
+              <span class="software-name">$\{p.name\}</span>\
+              $\{statusPill(p.status, p.trialDays, true)\}\
+              <span class="pill software-tag">SOFTWARE</span>\
+            </div>\
+            <p class="software-desc">$\{p.desc\}</p>\
+            <div class="software-meta">\
+              <span style="color:var(--sub)">v$\{p.ver\}$\{p.newVer ? ` <span style="color:var(--yellow)">
+\f3 \uc0\u8594 
+\f0  $\{p.newVer\}</span>` : ''\}</span>\
+              <span>$\{p.size\}</span>\
+              <span>$\{p.formats.join(' \'b7 ')\}</span>\
+            </div>\
+          </div>\
+          <div style="display:flex;align-items:center;justify-content:center;min-width:150px;">$\{action\}</div>\
+        </div>\
+      `;\
+    \}\
+\
+    function renderMain(filtered) \{\
+      const main = document.getElementById('mainContent');\
+      if (state.tab === 'shop') \{\
+        main.innerHTML = `<div class="empty"><div class="icon">
+\f4 \uc0\u55357 \u57037 
+\f0 </div><div style="font-size:18px;">Shop coming soon</div></div>`;\
+        return;\
+      \}\
+      if (!filtered.length) \{\
+        main.innerHTML = `<div class="empty"><div class="icon">
+\f3 \uc0\u9671 
+\f0 </div><div style="font-size:18px;">No products match this view</div></div>`;\
+        return;\
+      \}\
+      if (state.typeTab === 'library') \{\
+        main.innerHTML = `<div class="library-grid">$\{filtered.map(renderLibraryCard).join('')\}</div>`;\
+      \} else \{\
+        main.innerHTML = `<div class="software-list">$\{filtered.map(renderSoftwareCard).join('')\}</div>`;\
+      \}\
+    \}\
+\
+    function renderFooter(filtered) \{\
+      const activeDl = Object.entries(state.downloads).filter(([, d]) => d.progress < 100);\
+      document.getElementById('footerCount').textContent = `$\{filtered.length\} products`;\
+      document.getElementById('footerMeta').textContent = `($\{state.typeTab === 'software' ? 'software' : 'sound libraries'\} \'b7 $\{state.tab\})`;\
+\
+      const right = document.getElementById('footerRight');\
+      if (!activeDl.length) \{\
+        right.innerHTML = `<span style="letter-spacing:.08em;color:var(--ghost)">soundmorph.com</span>`;\
+        return;\
+      \}\
+      right.innerHTML = `\
+        <div class="footer-active">\
+          <div class="spinner"></div>\
+          $\{activeDl.slice(0, 3).map(([id, dl]) => \{\
+            const product = ALL.find(x => x.id === Number(id));\
+            return `\
+              <div style="display:flex;align-items:center;gap:5px;">\
+                <span style="font-size:12px;color:var(--sub)">$\{product?.name || ''\}</span>\
+                <div style="width:40px;height:2px;background:rgba(255,255,255,0.04);border-radius:1px;overflow:hidden;">\
+                  <div style="width:$\{dl.progress\}%;height:100%;background:var(--orange);"></div>\
+                </div>\
+                <span style="font-size:9px;color:var(--dim)">$\{dl.speed\}</span>\
+              </div>\
+            `;\
+          \}).join('')\}\
+        </div>\
+      `;\
+    \}\
+\
+    function bindEvents() \{\
+      document.querySelectorAll('[data-type]').forEach(btn => \{\
+        btn.onclick = () => \{\
+          state.typeTab = btn.dataset.type;\
+          if (state.typeTab === 'library' && (state.tab === 'update' || state.tab === 'trial')) state.tab = 'all';\
+          render();\
+        \};\
+      \});\
+\
+      document.querySelectorAll('[data-tab]').forEach(btn => \{\
+        btn.onclick = () => \{\
+          state.tab = btn.dataset.tab;\
+          render();\
+        \};\
+      \});\
+\
+      document.querySelectorAll('[data-download]').forEach(btn => \{\
+        btn.onclick = () => \{\
+          const id = Number(btn.dataset.download);\
+          const product = ALL.find(p => p.id === id);\
+          if (!product) return;\
+          if (product.status === 'installed' || product.status === 'downloaded') return;\
+          startDl(id);\
+        \};\
+      \});\
+\
+      document.querySelectorAll('[data-play]').forEach(btn => \{\
+        btn.onclick = () => \{\
+          const id = Number(btn.dataset.play);\
+          state.playing = state.playing === id ? null : id;\
+          render();\
+        \};\
+      \});\
+    \}\
+\
+    function render() \{\
+      const counts = getCounts();\
+      const filtered = getFiltered();\
+      const headerMessage = getHeaderMessage(filtered);\
+\
+      renderTypeTabs();\
+      renderStatusTabs(counts);\
+      renderBatchBar(filtered);\
+      renderMain(filtered);\
+      renderFooter(filtered);\
+\
+      document.getElementById('headerMeta').textContent = headerMessage;\
+      document.getElementById('headerSubmeta').textContent = state.tab !== 'shop' ? headerMessage : '';\
+      document.getElementById('settingsPanel').classList.toggle('open', state.settingsOpen);\
+      document.getElementById('settingsBtn').classList.toggle('active', state.settingsOpen);\
+\
+      bindEvents();\
+    \}\
+\
+    document.getElementById('searchInput').addEventListener('input', e => \{\
+      state.search = e.target.value;\
+      render();\
+    \});\
+\
+    document.getElementById('settingsBtn').addEventListener('click', () => \{\
+      state.settingsOpen = !state.settingsOpen;\
+      render();\
+    \});\
+\
+    render();\
+  </script>\
+</body>\
+</html>\
+}
